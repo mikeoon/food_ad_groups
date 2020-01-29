@@ -44,6 +44,26 @@ def clean_ad_name(df):
 	return df
 
 
+def find_top_avg(df, field, top, asc=False):
+	ad_mean_field = []
+	ad_labels = []
+	result = []
+	for ad in df['ad'].unique():
+		mask = (df['ad'] == ad)
+		ad_mean_field.append(df[mask][field].mean())
+		ad_labels.append(ad)
+
+	for i in np.array(ad_mean_field).argsort():
+	    result.append(ad_labels[i])
+
+	if asc:
+		return result[:top]
+	else:
+		result=result[::-1]
+		return result[:top]
+
+
+
 def plot_positives(df, field, figs=(20, 10)):
 	fig, ax = plt.subplots(figsize=figs)
 
@@ -52,6 +72,7 @@ def plot_positives(df, field, figs=(20, 10)):
 	    if get_averages(df, mask, 'ad_profit') >= 0:
 	        ax.plot(df[mask]['date'], df[mask][field],'--.' ,label=ad)
 
+	ax.axhline(df[field].mean(), df['date'].min(), df['date'].max(), c='k', linestyle='--', alpha=0.3)
 	ax.set_xlabel('Day')
 	ax.set_ylabel(field)
 	ax.set_title(f'ad_groups and {field}')
