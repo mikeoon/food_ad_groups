@@ -159,4 +159,7 @@ def find_trends(df, field):
 		ad_trends[ad] = params[0]
 	return ad_trends
 
+def create_ts_df(df, field):
+	return ad_table_df[['ad', 'date', field]].copy()
+
 
