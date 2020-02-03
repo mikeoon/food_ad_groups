@@ -144,5 +144,9 @@ def fit_linear_trend(series):
 	return linear_trend, linear_trend_ols.params
 
 
+def plot_linear_trend(ax, name, series):
+	linear_trend = fit_linear_trend(series)
+	plot_trend_data(ax, name, series)
+	ax.plot(series.index.date, linear_trend)
 
 
