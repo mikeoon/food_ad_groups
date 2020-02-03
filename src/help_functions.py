@@ -129,6 +129,19 @@ def bar_totals(df, field, tier_ads, figs=(20, 10)):
 
 
 
+# For finding trends in data
+
+def make_design_matrix(arr):
+	"""Construct a design matrix from a numpy array, converting to a 2-d array
+	and including an intercept term."""
+    return sm.add_constant(arr.reshape(-1, 1), prepend=False)
+
+def fit_linear_trend(series):
+	"""Fit a linear trend to a time series.  Return the fit trend as a numpy array."""
+	X = make_design_matrix(np.arange(len(series)) + 1)
+	linear_trend_ols = sm.OLS(series.values, X).fit()
+	linear_trend = linear_trend_ols.predict(X)
+	return linear_trend, linear_trend_ols.params
 
 
 
