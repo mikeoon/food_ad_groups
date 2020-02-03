@@ -79,6 +79,7 @@ def plot_positives(df, field, figs=(20, 10)):
 	plt.xticks(rotation=45)
 	ax.legend()
 
+
 def plot_multi_ads(df, field, ads, figs=(20, 10)):
 	fig, ax = plt.subplots(figsize=figs)
 
@@ -92,3 +93,43 @@ def plot_multi_ads(df, field, ads, figs=(20, 10)):
 	ax.set_title(f'ad_groups and {field}')
 	plt.xticks(rotation=45)
 	ax.legend()
+
+
+def plot_cumsums(df, field, ads, figs=(20,10)):
+	fig, ax = plt.subplots(figsize=figs)
+
+	for ad in ads:
+	    mask = (df['ad'] == ad)
+	    ax.plot(df[mask]['date'], df[mask][field].cumsum(),label=ad)
+
+	ax.set_xlabel('Day')
+	ax.set_ylabel(field)
+	ax.set_title(f'ad_groups and {field}')
+	plt.xticks(rotation=45)
+	ax.legend()
+
+
+def bar_totals(df, field, tier_ads, figs=(20, 10)):
+	fig, ax = plt.subplots(figsize=figs)
+
+	avg_sum = 0	
+	total_ads = 0
+	for t, ads in enumerate(tier_ads):
+		ad_heights = [df[df['ad'] == ad][field].sum() for ad in ads]
+		ax.bar(ads, ad_heights, label=f'tier_{t}')
+		avg_sum+=sum(ad_heights)
+		total_ads+=len(ads)
+
+	ax.axhline(avg_sum/total_ads, c='k', linestyle='--', alpha=0.3, label='sum_average')
+
+	ax.set_xlabel('ad_group')
+	ax.set_ylabel(field)
+	ax.set_title(f'ad_groups and {field}')
+	ax.legend()
+
+
+
+
+
+
+
