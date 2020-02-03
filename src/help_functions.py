@@ -150,3 +150,13 @@ def plot_linear_trend(ax, name, series):
 	ax.plot(series.index.date, linear_trend)
 
 
+def find_trends(df, field):
+	ad_trends = {}
+	for ad in df['ad'].unique():
+		mask = (df['ad'] == ad)
+		temp_series = df[mask][['date', field]].set_index('date')
+		preds, params = fit_linear_trend(temp_series)
+		ad_trends[ad] = params[0]
+	return ad_trends
+
+
