@@ -134,7 +134,7 @@ def bar_totals(df, field, tier_ads, figs=(20, 10)):
 def make_design_matrix(arr):
 	"""Construct a design matrix from a numpy array, converting to a 2-d array
 	and including an intercept term."""
-    return sm.add_constant(arr.reshape(-1, 1), prepend=False)
+	return sm.add_constant(arr.reshape(-1, 1), prepend=False)
 
 def fit_linear_trend(series):
 	"""Fit a linear trend to a time series.  Return the fit trend as a numpy array."""
@@ -160,6 +160,6 @@ def find_trends(df, field):
 	return ad_trends
 
 def create_ts_df(df, field):
-	return ad_table_df[['ad', 'date', field]].copy()
+	return df[['ad', 'date', field]].copy()
 
 
