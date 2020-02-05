@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
 plt.style.use('ggplot')
@@ -136,12 +137,15 @@ def make_design_matrix(arr):
 	and including an intercept term."""
 	return sm.add_constant(arr.reshape(-1, 1), prepend=False)
 
-def fit_linear_trend(series):
+def fit_linear_trend(series, eq=False):
 	"""Fit a linear trend to a time series.  Return the fit trend as a numpy array."""
 	X = make_design_matrix(np.arange(len(series)) + 1)
 	linear_trend_ols = sm.OLS(series.values, X).fit()
 	linear_trend = linear_trend_ols.predict(X)
-	return linear_trend, linear_trend_ols.params
+	if eq:
+		return linear_trend_ols
+	else:
+		return linear_trend, linear_trend_ols.params
 
 
 def plot_linear_trend(ax, name, series):
@@ -158,6 +162,15 @@ def find_trends(df, field):
 		preds, params = fit_linear_trend(temp_series)
 		ad_trends[ad] = params[0]
 	return ad_trends
+
+def find_trend_functions(df, field):
+	ad_trends_eq = {}
+	for ad in df['ad'].unique():
+		mask = (df['ad'] == ad)
+		temp_series = df[mask][['date', field]].set_index('date')
+		ad_trends_eq[ad] = fit_linear_trend(temp_series, eq=True)
+	return ad_trends_eq
+
 
 def create_ts_df(df, field):
 	return df[['ad', 'date', field]].copy()
